@@ -1,7 +1,7 @@
 title: Abandoned Places Blog
 description: Exploring the current state of places that were once popular around the world
-url: "" # Will be automatically set to GitHub Pages URL
-baseurl: "" # Empty string if repository name is root
+url: "https://lenho34.github.io"
+baseurl: "/goto_hannam"
 lang: en
 
 # Jekyll 설정
@@ -21,4 +21,5 @@ twitter:
 markdown: kramdown
 highlighter: rouge
 permalink: /:year/:month/:day/:title/
+show_excerpts: true
 
