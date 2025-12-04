@@ -2,9 +2,12 @@ name: Auto Post Generation
 
 on:
   schedule:
-    # Run daily at 9:00 AM UTC
+    # Run daily at 9:00 AM UTC (6:00 PM KST)
     - cron: '0 9 * * *'
   workflow_dispatch:  # Manual execution available
+
+permissions:
+  contents: write  # Required to commit and push
 
 jobs:
   generate-post:
