@@ -1,0 +1,18 @@
+# Configuration file example
+# Copy this file to config.yaml and update with your actual values
+
+google:
+  api_key: "AIzaSyBUrWy_QcqzNFbRPik7Dm7MqXmIbqmG-Gw"
+  cse_id: "8690747c4ec274a1e"
+
+places:
+  - name: "Times Square"
+    location: "New York, USA"
+    description: "Times Square was once the vibrant heart of New York City."
+  - name: "Detroit"
+    location: "Michigan, USA"
+    description: "Detroit was once the Motor City, a thriving industrial hub."
+
+posting:
+  images_per_post: 5
+  date_restrict_days: 30  # Search images from within the last N days

@@ -1,0 +1,24 @@
+title: Abandoned Places Blog
+description: Exploring the current state of places that were once popular around the world
+url: "" # Will be automatically set to GitHub Pages URL
+baseurl: "" # Empty string if repository name is root
+lang: en
+
+# Jekyll 설정
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# 구글 애드센스 설정 (나중에 실제 클라이언트 ID로 교체 필요)
+google_adsense: ca-pub-XXXXXXXXXXXXXXXX
+
+# 소셜 미디어
+twitter:
+  username: yourusername
+
+# 기타 설정
+markdown: kramdown
+highlighter: rouge
+permalink: /:year/:month/:day/:title/
+
