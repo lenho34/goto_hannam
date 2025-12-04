@@ -508,10 +508,6 @@ def create_post(place, wiki_info=None):
 ## Conclusion
 
 We've explored the current state of {place['name']}, a place that was once popular and thriving. While places change with the passage of time, the memories and stories remain.
-
----
-
-*This post was generated using Google Custom Search API, Wikipedia API, and Google Trends.*
 """
     
     # Generate front matter

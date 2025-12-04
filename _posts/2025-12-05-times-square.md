@@ -67,7 +67,3 @@ Times Square is brightly lit by numerous digital billboards and advertisements a
 ## Conclusion
 
 We've explored the current state of Times Square, a place that was once popular and thriving. While places change with the passage of time, the memories and stories remain.
-
----
-
-*This post was generated using Google Custom Search API, Wikipedia API, and Google Trends.*
