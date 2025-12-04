@@ -1,7 +1,7 @@
 ---
 categories:
 - Place Exploration
-date: 2024-12-05 00:02:29 +0900
+date: '2025-12-05 00:40:16'
 tags:
 - Times Square
 - abandoned places
@@ -15,33 +15,52 @@ title: The Current State of Times Square
 Times Square is a major commercial intersection, tourist destination, entertainment hub, and neighborhood in the Midtown Manhattan section of New York City. It is formed by the junction of Broadway, Seventh Avenue, and 42nd Street. Together with adjacent Duffy Square, Times Square is a bowtie-shaped plaza five blocks long between 42nd and 47th Streets.
 Times Square is brightly lit by numerous digital billboards and advertisements as well as businesses offering 24/7 service.
 
-## The Past
 
-Times Square was once a place beloved by many. How has this place changed over time?
+## Historical Events
+
+### 1. Times Square grew dramatically after World War I
+
+![Times Square historical event 1](https://upload.wikimedia.org/wikipedia/en/9/95/Legendary_kiss_V%E2%80%93J_day_in_Times_Square_Alfred_Eisenstaedt.jpg)
+
+*V-J Day in Times Square - Wikipedia*
+
+### 2. The ball drop was placed on hiatus for New Year's Eve in 1942 and 1943 due to lighting restrictions during World War II, replaced by a moment of silence that was observed at midnight in Times Square
+
+![Times Square historical event 2](https://media.gettyimages.com/id/3228419/photo/american-servicemen-and-civilians-smile-as-they-celebrate-news-of-the-japanese-surrender-and-the.jpg?s=612x612&w=gi&k=20&c=7jeaU8HPBSgTPzihbWZP7tE-44Gn7Qpx5Kwvyc1jBXU=)
+
+*78 Vj Day A Times Square New York Ny 1945 Stock Photos, High-Res ...*
+
+### 3. The victory itself was announced by a headline on the "zipper" news ticker at One Times Square, which read "OFFICIAL ***TRUMAN ANNOUNCES JAPANESE SURRENDER ***"
+
+![Times Square historical event 3](https://media.gettyimages.com/id/2163580766/photo/a-giant-screen-reads-japs-surrender-during-the-victory-in-japan-celebrations-at-the-end-of.jpg?s=612x612&w=gi&k=20&c=dIxxUopxzje_4taa--AW9Nr1EcMeirYvhTK79Z20dX0=)
+
+*78 Vj Day A Times Square New York Ny 1945 Stock Photos, High-Res ...*
+
+
 
 
 
 ## Current State
 
-![Times Square image 1](https://dynamic-media-cdn.tripadvisor.com/media/photo-o/31/d6/15/eb/entrance-to-the-ameritania.jpg?w=900&h=500&s=1)
+![Times Square image 1](https://cdn.britannica.com/66/154566-050-36E73C15/Times-Square-New-York-City.jpg)
 
-*AMERITANIA AT TIMES SQUARE HOTEL - Updated 2025 Prices & Reviews ...*
+*Times Square | Location, Description, History, & Facts | Britannica*
 
-![Times Square image 2](https://q-xx.bstatic.com/xdata/images/district/608x352/59903.webp?k=e8fc2c7fe9fd32006e68f6895cb179f48072fbc5a61d401a4f2920be1c3c645e&o=)
+![Times Square image 2](https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/97/38/c7/one-of-my-favourite-places.jpg?w=900&h=500&s=1)
 
-*The best hotels in Times Square, New York, United States*
+*Times Square (2025) - All You Need to Know BEFORE You Go (with ...*
 
-![Times Square image 3](https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/17/0c/7e/da.jpg)
+![Times Square image 3](https://static01.nyt.com/images/2025/09/26/multimedia/26unhablog-israel-protests-ptvg/26unhablog-israel-protests-ptvg-articleLarge.jpg?quality=75&auto=webp&disable=upscale)
 
-*2025 NYC Empire State Building Observation Deck Ticket (New York ...*
+*Thousands Protest Netanyahu's U.N. Speech in NYC - The New York Times*
 
-![Times Square image 4](https://imengine.public.prod.pdh.navigacloud.com/?uuid=20e78375-ceb2-5cab-bfd1-2fbd9a93dd46&type=preview&function=cover&height=609&width=800)
+![Times Square image 4](https://i.insider.com/64223e4355bd920018e1ff13?width=700)
 
-*Wall Street wants everyone using AI except its job applicants*
+*Disappointing Photos of Times Square in New York City - Business ...*
 
-![Times Square image 5](https://static01.nyt.com/images/2025/11/15/multimedia/15int-mexico-protest-bfcg/15int-mexico-protest-bfcg-articleLarge.jpg?quality=75&auto=webp&disable=upscale)
+![Times Square image 5](https://media.gettyimages.com/id/104417240/photo/united-states-a-night-view-of-broadway-avenue-and-times-square-in-new-york-in-the-1970s.jpg?s=612x612&w=gi&k=20&c=7L-L8SuFyy8YXOSKqMl-K3O1BuYxVHg_YQXi7yKiYLI=)
 
-*Protesters Rage Against Mexico's Government Over Corruption and ...*
+*989 Times Square 1970s Stock Photos, High-Res Pictures, and Images ...*
 
 
 
@@ -51,4 +70,4 @@ We've explored the current state of Times Square, a place that was once popular 
 
 ---
 
-*This post was generated using Google Custom Search API, Wikipedia API, and Google Trends, searching for images from within the last month.*
+*This post was generated using Google Custom Search API, Wikipedia API, and Google Trends.*

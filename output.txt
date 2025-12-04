@@ -1,0 +1,28 @@
+
+==================================================
+Selecting place based on Google Trends...
+==================================================
+Checking Google Trends for all places...
+  Times Square: Trend score = 50
+
+⚠️  Interrupted by user. Using scores collected so far...
+
+⚠️  Google Trends rate limited. Selecting first place from list.
+
+✅ Selected place: Times Square
+   Location: New York, USA
+
+Fetching information about Times Square...
+   Found Wikipedia page: Times Square
+   Extracted keywords: city, town
+   Found 3 historical events
+
+==================================================
+Searching for current state images of 'Times Square' using keywords: ['city', 'town']
+Searching images with query: Times Square New York, USA city town current state
+  Searching image for event: Times Square grew dramatically after World War I...
+  Searching image for event: The ball drop was placed on hiatus for New Year's Eve in 194...
+  Searching image for event: The victory itself was announced by a headline on the "zippe...
+Post created successfully: _posts\2025-12-05-times-square.md
+
+✅ Post generated successfully: _posts\2025-12-05-times-square.md
