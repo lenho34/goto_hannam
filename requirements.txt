@@ -1,4 +1,6 @@
 requests>=2.31.0
 python-frontmatter>=1.0.0
 PyYAML>=6.0
+pytrends>=4.9.2
+wikipedia>=1.4.0
 

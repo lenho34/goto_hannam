@@ -7,11 +7,28 @@ Uses Google Custom Search API to search for images and generate blog posts.
 import os
 import json
 import re
+import time
 import requests
 from datetime import datetime, timedelta
 from pathlib import Path
 import yaml
 import frontmatter
+
+# Optional imports with fallback
+try:
+    from pytrends.request import TrendReq
+    PTRENDS_AVAILABLE = True
+except ImportError:
+    PTRENDS_AVAILABLE = False
+    print("Warning: pytrends not available. Trend-based selection disabled.")
+
+try:
+    import wikipedia
+    wikipedia.set_lang("en")  # Set to English
+    WIKIPEDIA_AVAILABLE = True
+except ImportError:
+    WIKIPEDIA_AVAILABLE = False
+    print("Warning: wikipedia not available. Wikipedia integration disabled.")
 
 # Configuration
 # Read API key from environment variable or use default
@@ -23,6 +40,10 @@ CUSTOM_SEARCH_ENGINE_ID = os.getenv("GOOGLE_CSE_ID", "8690747c4ec274a1e")
 
 POSTS_DIR = Path("_posts")
 IMAGES_DIR = Path("images")
+
+# Initialize pytrends (if available)
+if PTRENDS_AVAILABLE:
+    pytrends = TrendReq(hl='en-US', tz=360)
 
 # List of places that were once popular around the world
 PLACES = [
@@ -39,6 +60,115 @@ PLACES = [
     {"name": "Humberstone", "location": "Chile", "description": "Humberstone was a thriving saltpeter mining town, now a UNESCO World Heritage Site."},
     {"name": "Kadykchan", "location": "Russia", "description": "Kadykchan was a Soviet mining town abandoned after the collapse of the USSR."},
 ]
+
+
+def get_trend_score(place_name, location=""):
+    """
+    Get Google Trends score for a place.
+    Returns a score from 0-100 based on recent search trends.
+    """
+    if not PTRENDS_AVAILABLE:
+        return 50  # Default score if pytrends not available
+    
+    try:
+        # Build search keyword
+        keyword = place_name
+        if location:
+            keyword = f"{place_name} {location}"
+        
+        # Get interest over time for the last 30 days
+        pytrends.build_payload([keyword], cat=0, timeframe='today 1-m', geo='', gprop='')
+        df = pytrends.interest_over_time()
+        
+        if df.empty:
+            return 50  # Default score if no data
+        
+        # Calculate average trend score
+        avg_score = df[keyword].mean()
+        return min(100, max(0, int(avg_score)))
+    
+    except Exception as e:
+        # Rate limiting or other errors - return default score
+        # Don't print error for rate limiting (429) to avoid spam
+        if "429" not in str(e):
+            print(f"Error getting trend score for {place_name}: {e}")
+        return 50  # Default score on error
+
+
+def get_wikipedia_info(place_name, location=""):
+    """
+    Get Wikipedia information for a place.
+    Returns a dictionary with summary, keywords, and full text.
+    """
+    if not WIKIPEDIA_AVAILABLE:
+        return {
+            "summary": "",
+            "keywords": [],
+            "full_text": ""
+        }
+    
+    try:
+        # Try to find Wikipedia page
+        search_query = place_name
+        if location:
+            # Try with location first
+            search_query = f"{place_name}, {location}"
+        
+        try:
+            page = wikipedia.page(search_query, auto_suggest=True)
+        except wikipedia.exceptions.DisambiguationError as e:
+            # If disambiguation, try first option
+            page = wikipedia.page(e.options[0])
+        except wikipedia.exceptions.PageError:
+            # Try without location
+            page = wikipedia.page(place_name, auto_suggest=True)
+        
+        return {
+            "summary": page.summary,
+            "keywords": extract_keywords(page.summary + " " + page.content[:2000]),
+            "full_text": page.content[:5000],  # First 5000 chars
+            "url": page.url,
+            "title": page.title
+        }
+    
+    except Exception as e:
+        print(f"Error getting Wikipedia info for {place_name}: {e}")
+        return {
+            "summary": "",
+            "keywords": [],
+            "full_text": ""
+        }
+
+
+def extract_keywords(text):
+    """
+    Extract relevant keywords from text that describe the place's characteristics.
+    """
+    # Keywords that indicate abandoned/ruined places
+    characteristic_keywords = [
+        "abandoned", "ruins", "ruined", "ghost town", "deserted", "derelict",
+        "decay", "decayed", "dilapidated", "crumbling", "collapsed",
+        "mining", "mine", "industrial", "factory", "manufacturing",
+        "disaster", "destroyed", "evacuated", "uninhabited",
+        "preserved", "memorial", "historical", "heritage",
+        "Soviet", "communist", "war", "bombing", "conflict"
+    ]
+    
+    text_lower = text.lower()
+    found_keywords = []
+    
+    for keyword in characteristic_keywords:
+        if keyword in text_lower:
+            found_keywords.append(keyword)
+    
+    # Also extract location-specific terms
+    location_terms = ["city", "town", "village", "island", "resort", "hotel", "zoo"]
+    for term in location_terms:
+        if term in text_lower:
+            found_keywords.append(term)
+    
+    # Remove duplicates and return top 5
+    return list(set(found_keywords))[:5]
 
 
 def search_images(query, num_results=10):
@@ -100,15 +230,43 @@ def search_images(query, num_results=10):
         return []
 
 
-def create_post(place):
+def search_images_by_features(place_name, location, keywords, num_results=10):
+    """
+    Search for images using place name and characteristic keywords.
+    """
+    # Build query with keywords
+    if keywords:
+        keyword_str = " ".join(keywords[:3])  # Use top 3 keywords
+        query = f"{place_name} {location} {keyword_str} current state"
+    else:
+        query = f"{place_name} {location} abandoned current state"
+    
+    print(f"Searching images with query: {query}")
+    return search_images(query, num_results)
+
+
+def create_post(place, wiki_info=None):
     """
     Generate a blog post based on place information.
     """
-    # Create search query
-    query = f"{place['name']} {place.get('location', '')} current state abandoned"
+    # Get Wikipedia info if not provided
+    if wiki_info is None:
+        print(f"Fetching Wikipedia information for '{place['name']}'...")
+        wiki_info = get_wikipedia_info(place['name'], place.get('location', ''))
     
-    print(f"Searching for images of '{place['name']}'...")
-    images = search_images(query, num_results=5)
+    # Extract keywords for image search
+    keywords = wiki_info.get('keywords', [])
+    if not keywords:
+        keywords = extract_keywords(place.get('description', ''))
+    
+    # Search images using features
+    print(f"Searching for images of '{place['name']}' using keywords: {keywords}")
+    images = search_images_by_features(
+        place['name'], 
+        place.get('location', ''), 
+        keywords,
+        num_results=5
+    )
     
     if not images:
         print(f"No images found for '{place['name']}'.")
@@ -133,11 +291,19 @@ def create_post(place):
         image_markdown += f"![{place['name']} image {i}]({img['url']})\n\n"
         image_markdown += f"*{img['title']}*\n\n"
     
+    # Use Wikipedia summary if available, otherwise use default description
+    description = place.get('description', '')
+    if wiki_info.get('summary'):
+        # Use Wikipedia summary, but keep it concise (first 2-3 sentences)
+        wiki_summary = wiki_info['summary']
+        sentences = wiki_summary.split('. ')
+        description = '. '.join(sentences[:3]) + '.' if len(sentences) > 3 else wiki_summary
+    
     # Post content
     location_text = f" ({place.get('location', '')})" if place.get('location') else ""
     content = f"""# The Current State of {place['name']}{location_text}
 
-{place['description']}
+{description}
 
 ## The Past
 
@@ -151,7 +317,7 @@ We've explored the current state of {place['name']}, a place that was once popul
 
 ---
 
-*This post was generated using Google Custom Search API, searching for images from within the last month.*
+*This post was generated using Google Custom Search API, Wikipedia API, and Google Trends, searching for images from within the last month.*
 """
     
     # Generate front matter
@@ -176,9 +342,72 @@ We've explored the current state of {place['name']}, a place that was once popul
     return filepath
 
 
+def select_place_by_trend():
+    """
+    Select a place based on Google Trends scores.
+    Places with higher trends are more likely to be selected.
+    Falls back to random selection if trends unavailable.
+    """
+    import random
+    
+    if not PTRENDS_AVAILABLE:
+        # Fallback to random if pytrends not available
+        print("pytrends not available, using random selection")
+        return random.choice(PLACES)
+    
+    print("Checking Google Trends for all places...")
+    place_scores = []
+    successful_scores = 0
+    
+    for i, place in enumerate(PLACES):
+        place_name = place['name']
+        location = place.get('location', '')
+        
+        # Get trend score
+        score = get_trend_score(place_name, location)
+        place_scores.append((place, score))
+        
+        # Only count non-default scores as successful
+        if score != 50:
+            successful_scores += 1
+        
+        print(f"  {place_name}: Trend score = {score}")
+        
+        # Longer delay to avoid rate limiting (3 seconds between requests)
+        if i < len(PLACES) - 1:  # Don't sleep after last item
+            time.sleep(3)
+    
+    # If we got rate limited (all scores are 50), fall back to random
+    if successful_scores == 0:
+        print("\n⚠️  Google Trends rate limited. Falling back to random selection.")
+        return random.choice(PLACES)
+    
+    # Sort by trend score (highest first)
+    place_scores.sort(key=lambda x: x[1], reverse=True)
+    
+    # Weighted random selection: higher trend = higher chance
+    # Use top 5 places for weighted selection
+    top_places = place_scores[:5]
+    weights = [score for _, score in top_places]
+    
+    # Normalize weights
+    total_weight = sum(weights)
+    if total_weight > 0:
+        weights = [w / total_weight for w in weights]
+        selected_place = random.choices(
+            [place for place, _ in top_places],
+            weights=weights,
+            k=1
+        )[0]
+    else:
+        selected_place = top_places[0][0]
+    
+    return selected_place
+
+
 def main():
     """
-    Main function: Randomly select a place and generate a post.
+    Main function: Select a place based on trends and generate a post.
     """
     import random
     
@@ -192,16 +421,34 @@ def main():
         print("Warning: GOOGLE_API_KEY is not set.")
         return
     
-    # Randomly select a place
+    # Select place (random for now, can enable trends later)
+    print("\n" + "="*50)
+    print("Selecting place...")
+    print("="*50)
+    
+    import random
+    # For now, use random selection to avoid rate limiting
+    # Can enable trends later: place = select_place_by_trend()
     place = random.choice(PLACES)
     
-    print(f"\nSelected place: {place['name']}")
+    print(f"\n✅ Selected place: {place['name']}")
     if place.get('location'):
-        print(f"Location: {place['location']}")
-    print(f"Search query: {place['name']} current state\n")
+        print(f"   Location: {place['location']}")
     
-    # Generate post
-    post_path = create_post(place)
+    # Get Wikipedia information
+    print(f"\nFetching information about {place['name']}...")
+    wiki_info = get_wikipedia_info(place['name'], place.get('location', ''))
+    
+    if wiki_info.get('summary'):
+        print(f"   Found Wikipedia page: {wiki_info.get('title', 'N/A')}")
+        print(f"   Extracted keywords: {', '.join(wiki_info.get('keywords', []))}")
+    else:
+        print("   Wikipedia information not available, using default description")
+    
+    print("\n" + "="*50)
+    
+    # Generate post with Wikipedia info
+    post_path = create_post(place, wiki_info)
     
     if post_path:
         print(f"\n✅ Post generated successfully: {post_path}")

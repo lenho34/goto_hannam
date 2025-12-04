@@ -2,7 +2,14 @@
 
 ## generate_post.py
 
-Automated blog post generation script.
+Automated blog post generation script with smart place selection and content enrichment.
+
+### Features
+
+- **Google Trends Integration**: Selects places based on current search trends
+- **Wikipedia API**: Automatically fetches place information and extracts characteristic keywords
+- **Smart Image Search**: Uses extracted keywords to find more relevant images
+- **Automatic Content Generation**: Creates rich blog posts with Wikipedia summaries
 
 ### Usage
 
@@ -10,6 +17,9 @@ Automated blog post generation script.
 # Set environment variables
 export GOOGLE_API_KEY="your-api-key"
 export GOOGLE_CSE_ID="your-cse-id"
+
+# Install dependencies (including pytrends and wikipedia)
+pip install -r requirements.txt
 
 # Run script
 python scripts/generate_post.py
@@ -23,15 +33,23 @@ $env:GOOGLE_CSE_ID="your-cse-id"
 python scripts/generate_post.py
 ```
 
-### Features
+### How It Works
 
-- Image search using Google Custom Search API
-- Search images from within the last month only
-- Automatic generation of Jekyll-formatted markdown files
-- Automatic front matter generation
+1. **Trend-Based Selection**: Checks Google Trends for all places and selects one with high search interest
+2. **Wikipedia Research**: Fetches Wikipedia page for the selected place
+3. **Keyword Extraction**: Extracts characteristic keywords (e.g., "abandoned", "ruins", "mining")
+4. **Smart Image Search**: Searches for images using place name + keywords
+5. **Post Generation**: Creates blog post with Wikipedia summary and relevant images
 
 ### Output
 
 Generated posts are saved in the `_posts/` directory.
 
 Filename format: `YYYY-MM-DD-place-name.md`
+
+### Dependencies
+
+- `pytrends`: Google Trends data
+- `wikipedia`: Wikipedia API access
+- `requests`: HTTP requests
+- `python-frontmatter`: Markdown front matter handling
